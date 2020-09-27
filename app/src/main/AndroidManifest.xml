@@ -31,7 +31,8 @@ package="cc.lkme.linkai_demo">
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- 穿山甲 -->
+        </activity>
+        <!-- 穿山甲 -->
         <provider
                 android:name="com.bytedance.sdk.openadsdk.TTFileProvider"
                 android:authorities="${applicationId}.TTFileProvider"
@@ -44,7 +45,8 @@ package="cc.lkme.linkai_demo">
         <provider
                 android:name="com.bytedance.sdk.openadsdk.multipro.TTMultiProvider"
                 android:authorities="${applicationId}.TTMultiProvider"
-                android:exported="false" /> <!-- gdt -->
+                android:exported="false" />
+        <!-- gdt -->
         <provider
                 android:name="android.support.v4.content.FileProvider"
                 android:authorities="${applicationId}.fileprovider"
@@ -67,7 +69,8 @@ package="cc.lkme.linkai_demo">
         <activity
                 android:name="com.qq.e.ads.LandscapeADActivity"
                 android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-                android:screenOrientation="landscape" /> <!-- 百度 -->
+                android:screenOrientation="landscape" />
+        <!-- 百度 -->
         <activity
                 android:name="com.baidu.mobads.AppActivity"
                 android:configChanges="screenSize|keyboard|keyboardHidden|orientation"
