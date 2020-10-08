@@ -25,6 +25,16 @@ package="cc.lkme.linkai_demo">
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity android:name=".AdRewardVideoActivity"></activity>
+        <activity android:name=".NativeUnifiedActivity"></activity>
+        <activity android:name=".InterstitialActivity" />
+        <activity android:name=".NativeActivity" />
+        <activity android:name=".NativeExpressActivity" />
+        <activity android:name=".AdBannerActivity" />
+        <activity
+                android:name=".AdSplashActivity"
+                android:configChanges="keyboard|orientation|screenSize"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Splash" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -17,8 +17,7 @@ public class CustomApp extends Application {
                 .setCacheAdPositionInfo(true)
                 .setUseTextureView(false)
                 .build();
-        LinkAi.getInstance(this, "7a63be16f3b7f731396eb1eed7bd0bed", aiAdConfig);
+        LinkAi.getInstance(this, "9f3265281569e995f65bde2949bf9e5c", aiAdConfig);
         LinkAi.getInstance().setDebug();
     }
-
 }
