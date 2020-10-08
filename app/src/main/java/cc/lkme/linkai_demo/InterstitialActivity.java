@@ -6,11 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.baidu.mobads.InterstitialAd;
-import com.baidu.mobads.InterstitialAdListener;
-
 import cc.lkme.common.referral.CommonError;
-import cc.lkme.common.util.LMLogger;
 import cc.lkme.linkai.adapter.callback.AiInteractionListener;
 import cc.lkme.linkai.adapter.referral.AiAdInfo;
 import cc.lkme.linkai.core.view.AiInterstitial;
@@ -29,7 +25,6 @@ public class InterstitialActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 aiInterstitial.load();
-//                bindInteractionView("7235551", 0, 0);
             }
         });
         show = findViewById(R.id.show);
@@ -86,45 +81,4 @@ public class InterstitialActivity extends AppCompatActivity {
         }
     }
 
-    private InterstitialAd mInterAd;
-
-    /**
-     * 创建横幅广告的View，并添加至接界面布局中 注意：只有将AdView添加到布局中后，才会有广告返回
-     */
-    private void bindInteractionView(String adPlaceId, int scaleWidth, int scaleHeight) {
-        mInterAd = new InterstitialAd(InterstitialActivity.this, adPlaceId);
-        // 设置监听器
-        mInterAd.setListener(new InterstitialAdListener() {
-
-            @Override
-            public void onAdReady() {
-                LMLogger.debugStackTrace();
-                // 资源已经缓存完毕，还没有渲染出来
-                mInterAd.showAd(InterstitialActivity.this);
-            }
-
-            @Override
-            public void onAdPresent() {
-                LMLogger.debugStackTrace();
-                // 广告已经渲染出来
-            }
-
-            @Override
-            public void onAdClick(InterstitialAd interstitialAd) {
-                LMLogger.debugStackTrace();
-            }
-
-            @Override
-            public void onAdDismissed() {
-                LMLogger.debugStackTrace();
-            }
-
-            @Override
-            public void onAdFailed(String reason) {
-                LMLogger.debugStackTrace();
-            }
-
-        });
-        mInterAd.loadAd();
-    }
 }
