@@ -2,13 +2,15 @@ package cc.lkme.linkai_demo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.ViewGroup;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import cc.lkme.common.referral.CommonError;
 import cc.lkme.linkai.adapter.callback.AiBannerListener;
 import cc.lkme.linkai.adapter.referral.AiAdInfo;
+import cc.lkme.linkai.core.PlatformAdPositionInfo;
 import cc.lkme.linkai.core.view.AiBannerView;
 
 public class AdBannerActivity extends AppCompatActivity {
@@ -21,8 +23,15 @@ public class AdBannerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ad_banner);
         bannerContainer = findViewById(R.id.banner_container);
-        aiBannerView = new AiBannerView(this, "100013");
-        bannerContainer.addView(aiBannerView, new FrameLayout.LayoutParams(1080, ViewGroup.LayoutParams.WRAP_CONTENT));
+        aiBannerView = new AiBannerView(this, "100000");
+        WindowManager manager = getWindowManager();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        manager.getDefaultDisplay().getMetrics(outMetrics);
+        // 600:150
+        bannerContainer.addView(aiBannerView, new FrameLayout.LayoutParams(outMetrics.widthPixels, FrameLayout.LayoutParams.WRAP_CONTENT));
+        PlatformAdPositionInfo.Builder builder = new PlatformAdPositionInfo.Builder();
+        builder.appendOpenAd("945438054").appendBaiduAd("7221721").appendGdtAd("1041028674945370");
+        aiBannerView.setCustomAdSort(builder.build());
         aiBannerView.setOnAiBannerListener(new AiBannerListener() {
 
             @Override

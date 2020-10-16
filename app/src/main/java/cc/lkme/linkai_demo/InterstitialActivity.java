@@ -9,8 +9,12 @@ import android.widget.Toast;
 import cc.lkme.common.referral.CommonError;
 import cc.lkme.linkai.adapter.callback.AiInteractionListener;
 import cc.lkme.linkai.adapter.referral.AiAdInfo;
+import cc.lkme.linkai.core.PlatformAdPositionInfo;
 import cc.lkme.linkai.core.view.AiInterstitial;
 
+/**
+ * 插屏广告
+ */
 public class InterstitialActivity extends AppCompatActivity {
 
     private Button load, show;
@@ -34,7 +38,10 @@ public class InterstitialActivity extends AppCompatActivity {
                 aiInterstitial.show();
             }
         });
-        aiInterstitial = new AiInterstitial(this, "100013");
+        aiInterstitial = new AiInterstitial(this, "100001");
+        PlatformAdPositionInfo.Builder builder = new PlatformAdPositionInfo.Builder();
+        builder.appendOpenAd("945460603");
+        aiInterstitial.setCustomAdSort(builder.build());
         aiInterstitial.setOnAiInteractionListener(new AiInteractionListener() {
 
             @Override
@@ -64,6 +71,16 @@ public class InterstitialActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onVideoComplete(AiAdInfo aiAdInfo) {
+                Toast.makeText(InterstitialActivity.this, "视频播放完成", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSkippedVideo(AiAdInfo aiAdInfo, float progress) {
+                Toast.makeText(InterstitialActivity.this, "视频被跳过", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
             public void onClose(AiAdInfo aiAdInfo) {
                 Toast.makeText(InterstitialActivity.this, "广告关闭", Toast.LENGTH_SHORT).show();
             }
@@ -80,5 +97,4 @@ public class InterstitialActivity extends AppCompatActivity {
             aiInterstitial.destroy();
         }
     }
-
 }

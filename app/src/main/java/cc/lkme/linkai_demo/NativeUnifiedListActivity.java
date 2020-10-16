@@ -17,21 +17,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bytedance.sdk.openadsdk.TTAppDownloadListener;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import cc.lkme.common.referral.CommonError;
 import cc.lkme.linkai.adapter.AiExpressAdConfig;
-import cc.lkme.linkai.adapter.callback.AiNativeListener;
+import cc.lkme.linkai.adapter.callback.AiNativeUnifiedListener;
 import cc.lkme.linkai.adapter.referral.AiAdError;
 import cc.lkme.linkai.adapter.referral.AiAdInfo;
+import cc.lkme.linkai.adapter.referral.NativeUnifiedAdInfo;
+import cc.lkme.linkai.adapter.view.AiNativeAdRenderAdapter;
 import cc.lkme.linkai.adapter.view.AiNativeExpress;
-import cc.lkme.linkai.core.view.AiNativeExpressAd;
+import cc.lkme.linkai.core.view.AiNativeUnifiedAd;
 
-public class NativeExpressActivity extends AppCompatActivity {
+public class NativeUnifiedListActivity extends AppCompatActivity {
 
     private static final String TAG = "FeedListActivity";
 
@@ -41,7 +45,7 @@ public class NativeExpressActivity extends AppCompatActivity {
     private MyAdapter myAdapter;
     private List<AiNativeExpress> mData;
     private Button adLoad;
-    private AiNativeExpressAd aiNativeExpressAd;
+    private AiNativeUnifiedAd aiNativeUnifiedAd;
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
@@ -50,8 +54,8 @@ public class NativeExpressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_native);
         AiExpressAdConfig.Builder aiExpressAdConfigBuilder = new AiExpressAdConfig.Builder();
         aiExpressAdConfigBuilder.setAdCount(2).setAdWidth(1080).setAdHeight(0);
-        aiNativeExpressAd = new AiNativeExpressAd(this, "100008", aiExpressAdConfigBuilder.build());
-        aiNativeExpressAd.setOnAiNativeListener(aiNativeListener);
+        aiNativeUnifiedAd = new AiNativeUnifiedAd(this, "100009");
+        aiNativeUnifiedAd.setOnAiNativeUnifiedListener(aiNativeUnifiedListener);
         initListView();
     }
 
@@ -94,23 +98,29 @@ public class NativeExpressActivity extends AppCompatActivity {
      * 加载feed广告
      */
     private void loadListAd() {
-        aiNativeExpressAd.load();
+        aiNativeUnifiedAd.load();
     }
 
-    private AiNativeListener aiNativeListener = new AiNativeListener() {
+    private AiNativeUnifiedListener aiNativeUnifiedListener = new AiNativeUnifiedListener() {
         @Override
-        public void onLoad(AiAdInfo aiAdInfo, List<AiNativeExpress> aiNativeExpressList) {
+        public void onLoad(AiAdInfo aiAdInfo, List<Object> ads) {
+
             if (mListView != null) {
                 mListView.setLoadingFinish();
             }
 
-            if (aiNativeExpressList == null || aiNativeExpressList.isEmpty()) {
-                Toast.makeText(NativeExpressActivity.this, "on FeedAdLoaded: ad is null!", Toast.LENGTH_SHORT).show();
+            if (ads == null || ads.isEmpty()) {
+                Toast.makeText(NativeUnifiedListActivity.this, "on FeedAdLoaded: ad is null!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             for (int i = 0; i < LIST_ITEM_COUNT; i++) {
                 mData.add(null);
+            }
+            // TODO: 2020/10/14 lipeng 待优化
+            List<AiNativeExpress> aiNativeExpressList = new LinkedList<>();
+            for (Object ad : ads) {
+                aiNativeExpressList.add((AiNativeExpress) ad);
             }
             bindAdListener(aiNativeExpressList);
         }
@@ -120,7 +130,7 @@ public class NativeExpressActivity extends AppCompatActivity {
             if (mListView != null) {
                 mListView.setLoadingFinish();
             }
-            Toast.makeText(NativeExpressActivity.this, "无广告", Toast.LENGTH_SHORT).show();
+            Toast.makeText(NativeUnifiedListActivity.this, "无广告", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -129,21 +139,67 @@ public class NativeExpressActivity extends AppCompatActivity {
         }
     };
 
-    private void bindAdListener(final List<AiNativeExpress> ads) {
-        final int count = mData.size();
+    /**
+     * 自渲染视图
+     */
+    public static class AiNativeAdRenderView implements AiNativeAdRenderAdapter {
+
+        Context mContext;
+        List<View> clickableView = new ArrayList<>();
+
+        public AiNativeAdRenderView(Context context) {
+            mContext = context;
+        }
+
+        View nativeUnifiedView;
+
+        @Override
+        public View renderAdView(NativeUnifiedAdInfo nativeUnifiedAdInfo) {
+            if (nativeUnifiedView == null) {
+                nativeUnifiedView = LayoutInflater.from(mContext).inflate(R.layout.native_unified_custom, null);
+            }
+            if (nativeUnifiedView.getParent() != null) {
+                ((ViewGroup) nativeUnifiedView.getParent()).removeView(nativeUnifiedView);
+            }
+            TextView title = nativeUnifiedView.findViewById(R.id.title);
+            SimpleDraweeView icon = nativeUnifiedView.findViewById(R.id.icon);
+            TextView desc = nativeUnifiedView.findViewById(R.id.desc);
+            SimpleDraweeView bigImg = nativeUnifiedView.findViewById(R.id.big_img);
+            title.setText(nativeUnifiedAdInfo.getTitle());
+            desc.setText(nativeUnifiedAdInfo.getDescription());
+            icon.setImageURI(nativeUnifiedAdInfo.getIconUrl());
+            bigImg.setImageURI(nativeUnifiedAdInfo.getImgUrl());
+            clickableView.add(title);
+            clickableView.add(icon);
+            clickableView.add(desc);
+            clickableView.add(bigImg);
+            return nativeUnifiedView;
+        }
+
+        @Override
+        public List<View> getClickableView() {
+            return clickableView;
+        }
+    }
+
+    private void bindAdListener(List<AiNativeExpress> ads) {
+        int count = mData.size();
         for (AiNativeExpress ad : ads) {
-            final AiNativeExpress adTmp = ad;
             int random = (int) (Math.random() * LIST_ITEM_COUNT) + count - LIST_ITEM_COUNT;
-            mData.set(random, adTmp);
+            mData.set(random, ad);
             myAdapter.notifyDataSetChanged();
-            adTmp.setExpressAdInteractionListener(new AiNativeExpress.ExpressAdInteractionListener() {
+            if (!ad.isExpress()) {
+                // 自渲染
+                ad.renderAdView(new AiNativeAdRenderView(NativeUnifiedListActivity.this));
+            }
+            ad.setExpressAdInteractionListener(new AiNativeExpress.ExpressAdInteractionListener() {
 
                 @Override
                 public void onAdClicked(AiAdInfo aiAdInfo) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(NativeExpressActivity.this, "广告被点击", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NativeUnifiedListActivity.this, "广告被点击", Toast.LENGTH_SHORT).show();
 
                         }
                     });
@@ -154,7 +210,7 @@ public class NativeExpressActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(NativeExpressActivity.this, "广告展示", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NativeUnifiedListActivity.this, "广告展示", Toast.LENGTH_SHORT).show();
 
                         }
                     });
@@ -165,7 +221,7 @@ public class NativeExpressActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(NativeExpressActivity.this, aiAdError.toString(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NativeUnifiedListActivity.this, aiAdError.toString(), Toast.LENGTH_SHORT).show();
 
                         }
                     });
@@ -177,7 +233,7 @@ public class NativeExpressActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             //返回view的宽高 单位 dp
-                            Toast.makeText(NativeExpressActivity.this, "渲染成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NativeUnifiedListActivity.this, "渲染成功", Toast.LENGTH_SHORT).show();
                             myAdapter.notifyDataSetChanged();
                         }
                     });

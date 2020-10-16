@@ -23,7 +23,7 @@ public class AdRewardVideoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ad_reward_video);
         loadRewardVideo = findViewById(R.id.load_reward_video);
         showRewardVideo = findViewById(R.id.show_reward_video);
-        aiRewardVideoAd = new AiRewardVideoAd(this, "100016");
+        aiRewardVideoAd = new AiRewardVideoAd(this, "100004");
         aiRewardVideoAd.setOnAiRewardVideoListener(new AiRewardVideoListener() {
 
             @Override
@@ -106,6 +106,7 @@ public class AdRewardVideoActivity extends AppCompatActivity {
 
         PlatformAdPositionInfo.Builder builder = new PlatformAdPositionInfo.Builder();
         builder.appendBaiduAd("7228298").appendGdtAd("9041425803910658").appendOpenAd("945453114");
+        // 客户原序必须设置
         aiRewardVideoAd.setCustomAdSort(builder.build());
         loadRewardVideo.setOnClickListener(new View.OnClickListener() {
             @Override

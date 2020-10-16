@@ -21,7 +21,7 @@ public class AdSplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ad_splash);
         splashContainer = findViewById(R.id.splash_container);
-        aiSplashView = new AiSplashView(this, "100014");
+        aiSplashView = new AiSplashView(this, "100007");
         splashContainer.addView(aiSplashView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         aiSplashView.setOnAiSplashListener(new AiSplashListener() {
 
