@@ -294,19 +294,7 @@ public class NativeUnifiedListActivity extends AppCompatActivity {
                 return ITEM_VIEW_TYPE_NORMAL;
             } else if (ad.isExpress()) {
                 return ITEM_VIEW_TYPE_SMALL_PIC_AD;
-            }
-//            else if (ad.getImageMode() == TTAdConstant.IMAGE_MODE_LARGE_IMG) {
-//                return ITEM_VIEW_TYPE_LARGE_PIC_AD;
-//            } else if (ad.getImageMode() == TTAdConstant.IMAGE_MODE_GROUP_IMG) {
-//                return ITEM_VIEW_TYPE_GROUP_PIC_AD;
-//            } else if (ad.getImageMode() == TTAdConstant.IMAGE_MODE_VIDEO) {
-//                return ITEM_VIEW_TYPE_VIDEO;
-//            } else if (ad.getImageMode() == TTAdConstant.IMAGE_MODE_VERTICAL_IMG) {
-//                return ITEM_VIEW_TYPE_VERTICAL_IMG;
-//            } else if (ad.getImageMode() == TTAdConstant.IMAGE_MODE_VIDEO_VERTICAL) {
-//                return ITEM_VIEW_TYPE_VIDEO_VERTICAL;
-//            }
-            else {
+            } else {
 //                Toast.makeText(mContext, "图片展示样式错误", Toast.LENGTH_SHORT).show();
                 return ITEM_VIEW_TYPE_SMALL_PIC_AD;
             }

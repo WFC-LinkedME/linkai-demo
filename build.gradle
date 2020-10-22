@@ -27,3 +27,9 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    //linkAi
+    linkAiSdkVersionCode = 2007
+    linkAiSdkVersion = "2.0.0.7"
+}
